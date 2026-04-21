@@ -11,6 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookRequest {
     String title;
-    MultipartFile imageUrl;
     Long authorId;
 }

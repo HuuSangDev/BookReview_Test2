@@ -23,7 +23,7 @@ public class AuthorService {
     AuthorRepository authorRepository;
     AuthorMapper authorMapper;
 
-    List<AuthorResponse>ListAuthor(int page, int size)
+    public List<AuthorResponse>ListAuthor(int page, int size)
     {
         Page<Author> authorPage = authorRepository.findAll(PageRequest.of(page - 1, size));
 
@@ -59,7 +59,7 @@ public class AuthorService {
         return authorMapper.toAuthorResponse(authorRepository.save(author));
     }
 
-    // Yêu cầu 8: Xóa
+
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
             throw new AppException(ErrorCode.AUTHOR_NOT_FOUND);

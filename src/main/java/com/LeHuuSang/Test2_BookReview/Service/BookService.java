@@ -9,21 +9,15 @@ import com.LeHuuSang.Test2_BookReview.Exception.ErrorCode;
 import com.LeHuuSang.Test2_BookReview.Mapstruct.BookMapper;
 import com.LeHuuSang.Test2_BookReview.Repository.AuthorRepository;
 import com.LeHuuSang.Test2_BookReview.Repository.BookRepository;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -33,11 +27,7 @@ public class BookService {
     BookRepository bookRepository;
     AuthorRepository authorRepository;
     BookMapper bookMapper;
-    Cloudinary cloudinary;
 
-    @NonFinal
-    @Value("${upload.path}") // Cấu hình trong `application.properties`
-    protected String uploadPath;
 
     public List<BookResponse> ListBooks(int page, int size) {
         Page<Book> bookPage = bookRepository.findAll(PageRequest.of(page - 1, size));
@@ -57,14 +47,16 @@ public class BookService {
                 .orElseThrow(() -> new AppException(ErrorCode.AUTHOR_NOT_FOUND));
 
 
-        var imgUrl=uploadToCouldinary(request.getImageUrl());
         Book book = Book.builder()
                 .title(request.getTitle())
                 .author(author)
-                .imageUrl(imgUrl)
                 .build();
         book=bookRepository.save(book);
-        return bookMapper.toBookResponse(book);
+        return BookResponse.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .authorName(book.getAuthor().getName())
+                .build();
     }
 
     // ADMIN cập nhật Book
@@ -77,7 +69,7 @@ public class BookService {
 
         bookMapper.updateBook(request, book);
         book.setAuthor(author);
-
+        //da xoa di phan image cho book vi ko co trong yeu cau !
         return bookMapper.toBookResponse(bookRepository.save(book));
     }
 
@@ -90,15 +82,5 @@ public class BookService {
     }
 
 
-    private String uploadToCouldinary(MultipartFile file) {
-        try {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            return uploadResult.get("secure_url").toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
 
-
-        }
-
-    }
 }

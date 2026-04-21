@@ -14,7 +14,6 @@ public class BookResponse {
 
     Long id;
     String title;
-    String imageUrl;
     String authorName;
 
 
