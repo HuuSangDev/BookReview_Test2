@@ -18,9 +18,6 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String title;
-
-    String imageUrl;
-
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Review>reviews;
 
