@@ -19,12 +19,8 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String content;
-    Integer rating;
 
-    //user 1-n review
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    User user;
+    //ở đây chúng ta chỉ làm 2 role , khách vãng lai và admin thôi
 
     //book 1-n review
     @ManyToOne(fetch = FetchType.LAZY)

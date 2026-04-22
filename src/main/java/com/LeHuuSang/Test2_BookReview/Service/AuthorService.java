@@ -2,6 +2,7 @@ package com.LeHuuSang.Test2_BookReview.Service;
 
 import com.LeHuuSang.Test2_BookReview.Dto.Request.AuthorRequest;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.AuthorResponse;
+import com.LeHuuSang.Test2_BookReview.Dto.Response.PageResponse;
 import com.LeHuuSang.Test2_BookReview.Entity.Author;
 import com.LeHuuSang.Test2_BookReview.Exception.AppException;
 import com.LeHuuSang.Test2_BookReview.Exception.ErrorCode;
@@ -12,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,17 +26,26 @@ public class AuthorService {
     AuthorRepository authorRepository;
     AuthorMapper authorMapper;
 
-    public List<AuthorResponse>ListAuthor(int page, int size)
-    {
-        Page<Author> authorPage = authorRepository.findAll(PageRequest.of(page - 1, size));
+    public PageResponse<AuthorResponse> ListAuthor(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Author> authorPage = authorRepository.findAll(pageable);
 
-        return authorPage.getContent().stream()
+        List<AuthorResponse> data = authorPage.getContent()
+                .stream()
                 .map(author -> AuthorResponse.builder()
                         .id(author.getId())
                         .name(author.getName())
-                        .booksCount(author.getBooks() != null ? author.getBooks().size() : 0)
+                        .booksCount(author.getBooks().size())
                         .build())
-                .toList();
+                .collect(Collectors.toList());  // ← bọc thành List rõ ràng
+
+        return PageResponse.<AuthorResponse>builder()
+                .data(data)
+                .currentPage(page)
+                .totalPages(authorPage.getTotalPages())
+                .totalElements(authorPage.getTotalElements())
+                .pageSize(size)
+                .build();
     }
 
 

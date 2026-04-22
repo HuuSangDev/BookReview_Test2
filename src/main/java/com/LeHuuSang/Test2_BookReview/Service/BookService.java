@@ -2,6 +2,7 @@ package com.LeHuuSang.Test2_BookReview.Service;
 
 import com.LeHuuSang.Test2_BookReview.Dto.Request.BookRequest;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.BookResponse;
+import com.LeHuuSang.Test2_BookReview.Dto.Response.PageResponse;
 import com.LeHuuSang.Test2_BookReview.Entity.Author;
 import com.LeHuuSang.Test2_BookReview.Entity.Book;
 import com.LeHuuSang.Test2_BookReview.Exception.AppException;
@@ -16,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -29,18 +31,26 @@ public class BookService {
     BookMapper bookMapper;
 
 
-    public List<BookResponse> ListBooks(int page, int size) {
-        Page<Book> bookPage = bookRepository.findAll(PageRequest.of(page - 1, size));
-        return bookPage.getContent().stream()
+    public PageResponse<BookResponse> ListBooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+
+        List<BookResponse> data = bookPage.getContent().stream()
                 .map(book -> BookResponse.builder()
                         .id(book.getId())
                         .title(book.getTitle())
                         .authorName(book.getAuthor().getName())
-                        .build()
-                )
+                        .build())
                 .toList();
-    }
 
+        return PageResponse.<BookResponse>builder()
+                .data(data)
+                .currentPage(page)
+                .totalPages(bookPage.getTotalPages())
+                .totalElements(bookPage.getTotalElements())
+                .pageSize(size)
+                .build();
+    }
     // ADMIN tạo Book
     public BookResponse createBook(BookRequest request) {
         Author author = authorRepository.findById(request.getAuthorId())

@@ -1,12 +1,12 @@
 package com.LeHuuSang.Test2_BookReview.Controller;
 
 import com.LeHuuSang.Test2_BookReview.Dto.Request.BookRequest;
-import com.LeHuuSang.Test2_BookReview.Dto.Request.RegisterRequest;
+import com.LeHuuSang.Test2_BookReview.Dto.Request.ReviewRequest;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.ApiResponse;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.BookResponse;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.PageResponse;
-import com.LeHuuSang.Test2_BookReview.Dto.Response.UserResponse;
-import com.LeHuuSang.Test2_BookReview.Service.BookService;
+import com.LeHuuSang.Test2_BookReview.Dto.Response.ReviewResponse;
+import com.LeHuuSang.Test2_BookReview.Service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,46 +17,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/reviews")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BookController {
+public class ReviewController {
 
-    BookService bookService;
+    ReviewService reviewService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
-   ApiResponse<BookResponse>createBook(@Valid @RequestBody BookRequest request)
+    ApiResponse<ReviewResponse> createReview(@Valid @RequestBody ReviewRequest request)
     {
-        return ApiResponse.<BookResponse>builder()
+        return ApiResponse.<ReviewResponse>builder()
                 .message("Create book success")
-                .result(bookService.createBook(request))
+                .result(reviewService.createReview(request))
                 .build();
 
     }
 
-    @GetMapping("get-books")
-    public ApiResponse<PageResponse<BookResponse>> getBooks(
+    @GetMapping("get-reviews")
+    public ApiResponse<PageResponse<ReviewResponse>> getReviews(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int size) {
-        return ApiResponse.<PageResponse<BookResponse>>builder()
-                .message("Fetch books success")
-                .result(bookService.ListBooks(page, size))
+        return ApiResponse.<PageResponse<ReviewResponse>>builder()
+                .message("Fetch reviews success")
+                .result(reviewService.ListReview(page, size))
                 .build();
     }
-
-
-
-
     @PutMapping("/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ApiResponse<BookResponse> updateBook(
+    public ApiResponse<ReviewResponse> updateBook(
             @PathVariable Long id,
-            @RequestBody @Valid BookRequest request) {
+            @RequestBody @Valid ReviewRequest request) {
 
-        return ApiResponse.<BookResponse>builder()
-                .message("Update book success")
-                .result(bookService.updateBook(id, request))
+        return ApiResponse.<ReviewResponse>builder()
+                .message("Update review success")
+                .result(reviewService.updateReview(id, request))
                 .build();
     }
 
@@ -64,12 +59,9 @@ public class BookController {
     @PreAuthorize("hasRole('ADMIN')")
     public ApiResponse<String> deleteBook(@PathVariable Long id) {
 
-        bookService.deleteBook(id);
+        reviewService.deleteReview(id);
         return ApiResponse.<String>builder()
-                .message("Delete book success")
+                .message("Delete review success")
                 .build();
     }
-
-
-
 }

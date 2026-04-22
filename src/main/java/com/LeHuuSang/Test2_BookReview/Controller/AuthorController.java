@@ -3,6 +3,7 @@ package com.LeHuuSang.Test2_BookReview.Controller;
 import com.LeHuuSang.Test2_BookReview.Dto.Request.AuthorRequest;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.ApiResponse;
 import com.LeHuuSang.Test2_BookReview.Dto.Response.AuthorResponse;
+import com.LeHuuSang.Test2_BookReview.Dto.Response.PageResponse;
 import com.LeHuuSang.Test2_BookReview.Service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -22,11 +23,10 @@ public class AuthorController {
     AuthorService authorService;
 
     @GetMapping("get-authors")
-    public ApiResponse<List<AuthorResponse>> getAuthors(
+    public ApiResponse<PageResponse<AuthorResponse>> getAuthors(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        return ApiResponse.<List<AuthorResponse>>builder()
+            @RequestParam(defaultValue = "5") int size) {
+        return ApiResponse.<PageResponse<AuthorResponse>>builder()
                 .message("Fetch authors success")
                 .result(authorService.ListAuthor(page, size))
                 .build();

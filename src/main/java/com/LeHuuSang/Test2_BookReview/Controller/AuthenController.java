@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenController {
 
     AuthenService authenService;
-
-
     @PostMapping("/log-in")
     ApiResponse<LoginReponse> login(@RequestBody LoginRequest request)
     {
