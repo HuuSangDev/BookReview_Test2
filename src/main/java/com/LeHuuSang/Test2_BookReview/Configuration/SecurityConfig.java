@@ -36,7 +36,9 @@ public class SecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request->
-                        request.requestMatchers("/users/register","/auth/**").permitAll()
+                        request.requestMatchers("/users/register","/auth/**",
+                                        "/books/get-books","/authors/get-authors",
+                                        "/reviews/create","/reviews/get-reviews").permitAll()
                                 .anyRequest().authenticated()) ;      //con nhung rq con lai can xac thuc
 
 

@@ -9,6 +9,7 @@ public enum ErrorCode {
     AUTHOR_EXISTED(106,"author existed"),
     AUTHOR_NOT_FOUND(107,"author not found"),
     BOOK_NOT_FOUND(108,"book not found"),
+    REVIEW_NOT_FOUND(109,"review not found"),
 
 
     ;
