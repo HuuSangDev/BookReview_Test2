@@ -11,18 +11,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "books")
+@Table(name = "authors")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Book {
+public class Author {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String title;
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Review>reviews;
+    String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    Author author;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    List<Book>books;
 
 }
